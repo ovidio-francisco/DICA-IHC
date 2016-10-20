@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -21,25 +23,48 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton btCima, btEsq, btDir, btBaixo;
     private TextView tw, twTexto, twNexts;
 
-
     private void setText(String text) {
         tw.setText(tw.getText().toString().concat(text+" "));
     }
 
-    private void addTouch(int t) {
+    private void addFeedbackTouch(int t) {
 
-        commands.add(t);
 
         String touchDesc = "???";
-
         switch (t) {
             case Touch.UP   : touchDesc = "^";  break;
             case Touch.DOWN : touchDesc = "V";  break;
             case Touch.LEFT : touchDesc = "<";  break;
             case Touch.RIGHT: touchDesc = ">";  break;
         }
-
         tw.append(touchDesc + " ");
+
+        int drawable = 0;
+        switch (t) {
+            case Touch.UP   : drawable = R.mipmap.ic_up;     break;
+            case Touch.DOWN : drawable = R.mipmap.ic_down;   break;
+            case Touch.LEFT : drawable = R.mipmap.ic_left2;  break;
+            case Touch.RIGHT: drawable = R.mipmap.ic_right;  break;
+        }
+
+        LinearLayout layoutCommands = (LinearLayout)findViewById(R.id.layoutTouches);
+        ImageView touch = new ImageView(this);
+        touch.setImageResource(drawable);
+        layoutCommands.addView(touch);
+    }
+
+    private void cleanFeedbackTouches() {
+        LinearLayout layoutCommands = (LinearLayout)findViewById(R.id.layoutTouches);
+
+        layoutCommands.removeAllViews();
+        tw.setText("");
+
+    }
+
+    private void addTouch(int t) {
+
+        commands.add(t);
+        addFeedbackTouch(t);
 
         Command command = new Command(commands);
 
@@ -51,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             if(s != null) {
                 twTexto.append(s);
                 commands.clear();
-                tw.setText("");
+                cleanFeedbackTouches();
                 twNexts.setText("");
             }
         }
@@ -74,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
         if (stage == Stage.WRONG) {
             commands.clear();
             tw.append("Wrong! :(   ");
+            cleanFeedbackTouches();
             twNexts.setText("");
         }
 
@@ -124,5 +150,10 @@ public class MainActivity extends AppCompatActivity {
         tw.setText("");
         twTexto.setText("");
         twNexts.setText("");
+
+
+
+
+
     }
 }

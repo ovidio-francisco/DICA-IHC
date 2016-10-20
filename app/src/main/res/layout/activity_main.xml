@@ -76,7 +76,7 @@
     <TextView
         android:text="texto"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:id="@+id/twTexto"
         android:textSize="36sp"
         android:layout_alignParentTop="true"
@@ -100,9 +100,10 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerVertical="true"
+        android:layout_height="150dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"></LinearLayout>
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/twNexts"
+        android:id="@+id/layoutTouches"></LinearLayout>
 
 </RelativeLayout>

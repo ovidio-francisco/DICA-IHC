@@ -12,10 +12,10 @@
     tools:context="com.example.ovidiojf.buttons.MainActivity">
 
     <ImageButton
+        android:id="@+id/btBaixo"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:srcCompat="@mipmap/ic_down"
-        android:id="@+id/btBaixo"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
@@ -24,10 +24,10 @@
         android:layout_toEndOf="@+id/btEsquerda" />
 
     <ImageButton
+        android:id="@+id/btCima"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:srcCompat="@mipmap/ic_up"
-        android:id="@+id/btCima"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
@@ -36,10 +36,10 @@
         android:layout_toEndOf="@+id/btEsquerda" />
 
     <ImageButton
+        android:id="@+id/btDireita"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:srcCompat="@mipmap/ic_right"
-        android:id="@+id/btDireita"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
@@ -48,10 +48,10 @@
         android:layout_toEndOf="@+id/btCima" />
 
     <ImageButton
+        android:id="@+id/btEsquerda"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:srcCompat="@mipmap/ic_left2"
-        android:id="@+id/btEsquerda"
         android:background="@android:color/transparent"
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
@@ -59,51 +59,73 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <TextView
-        android:text="dir: "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:textSize="36sp"
-        android:layout_above="@+id/btCima"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="25dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textStyle="normal|bold" />
-
-    <TextView
+    <EditText
+        android:id="@+id/etTexto"
         android:text="texto"
         android:layout_width="wrap_content"
-        android:layout_height="150dp"
-        android:id="@+id/twTexto"
+        android:layout_height="100dp"
         android:textSize="36sp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:text="nexts: "
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/textView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/twNexts"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:textSize="24sp" />
+        android:fontFamily="sans-serif"
+        />
 
     <LinearLayout
+        android:id="@+id/layoutTouches"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/lbTouches"
+        android:layout_alignParentLeft="true"
+        android:gravity="center"
+        android:layout_alignParentStart="true" >
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutNexts"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_below="@+id/lbNexts"
+        android:layout_above="@id/btCima"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/twNexts"
-        android:id="@+id/layoutTouches"></LinearLayout>
+
+        >
+
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/lbNexts"
+        android:text="Próximos Comandos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/layoutTouches"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/colorAccent"/>
+
+    <TextView
+        android:id="@+id/lbTouches"
+        android:text="Toques"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_below="@+id/etTexto"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:gravity="center"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/colorAccent"/>
 
 </RelativeLayout>

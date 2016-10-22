@@ -7,11 +7,24 @@ public class Encoder {
 	public enum Stage {DONE, WRONG, INCOMPLET};
 
 	static ArrayList<Command> commandList = new ArrayList<>();
-	
+
 	public static final char charUP    = '^';
 	public static final char charDOWN  = 'V';
 	public static final char charLEFT  = '<';
 	public static final char charRIGHT = '>';
+
+//	public static final String STR_LEFT  = "\u21E6";
+//	public static final String STR_UP    = "\u27AB";
+//	public static final String STR_RIGHT = "\u27A9";
+//	public static final String STR_DOWN  = "\u27B9";
+
+	static int first = 0x21E6;
+//	static int first = 0x21D0 + 22;
+
+	public static final String STR_LEFT  = ""+(char)(first +0);
+	public static final String STR_UP    = ""+(char)(first +1);
+	public static final String STR_RIGHT = ""+(char)(first +2);
+	public static final String STR_DOWN  = ""+(char)(first +3);
 
 	public static final String _A = "A";
 	public static final String _B = "B";
@@ -45,27 +58,28 @@ public class Encoder {
 	public static final Command command_I = new Command(">^", _I);
 	public static final Command command_B = new Command("<>V", _B);
 	public static final Command command_C = new Command("<V<", _C);
-	public static final Command command_D = new Command("<><", _D);
-	public static final Command command_F = new Command("V><", _F);
-	public static final Command command_G = new Command("VV>", _G);
 	public static final Command command_H = new Command("<VV", _H);
 	public static final Command command_J = new Command("<^<", _J);
+	public static final Command command_D = new Command("<><", _D);
+	public static final Command command_R = new Command("<>^", _R);
+	public static final Command command_S = new Command("<>>", _S);
+	public static final Command command_O = new Command("<V>", _O);
+	public static final Command command_F = new Command("V><", _F);
+	public static final Command command_G = new Command("VV>", _G);
 	public static final Command command_K = new Command("V^^", _K);
 	public static final Command command_L = new Command("V>V", _L);
 	public static final Command command_M = new Command("V<>", _M);
 	public static final Command command_N = new Command("V<<", _N);
-	public static final Command command_O = new Command("<V>", _O);
 	public static final Command command_P = new Command("V<V", _P);
-	public static final Command command_Q = new Command("V<^", _Q);
-	public static final Command command_R = new Command("<>^", _R);
-	public static final Command command_S = new Command("<>>", _S);
-	public static final Command command_T = new Command("V<<", _T);
 	public static final Command command_U = new Command("V>>", _U);
-	public static final Command command_V = new Command("VVV", _V);
-	public static final Command command_X = new Command("<V^", _X);
-	public static final Command command_Y = new Command("<^>", _Y);
-	public static final Command command_W = new Command("VV^", _W);
-	public static final Command command_Z = new Command("<^V", _Z);
+	public static final Command command_Q = new Command("^<^", _Q);
+	public static final Command command_T = new Command("^<<", _T);
+	public static final Command command_V = new Command("^VV", _V);
+	public static final Command command_X = new Command("^V>", _X);
+	public static final Command command_Y = new Command("^<>", _Y);
+	public static final Command command_W = new Command("^V^", _W);
+	public static final Command command_Z = new Command("^<V", _Z);
+
 
 	static {
 		commandList.add(command_A);
@@ -94,6 +108,9 @@ public class Encoder {
 		commandList.add(command_Y);
 		commandList.add(command_W);
 		commandList.add(command_Z);
+
+		commandList.add(new Command(">>", " ", "_"));
+		commandList.add(new Command("<<", "<", "⌫"));
 	}
 	
 	public static String find(Command c) {
@@ -108,15 +125,39 @@ public class Encoder {
 
 	public static ArrayList<Command> nextCommands (Command cmd) {
 		ArrayList<Command> result = new ArrayList<>();
-		
+
 		for (Command c : commandList) {
-			if (c.touchesToString().startsWith(cmd.touchesToString()))
+			if (c.touchesToString(0).startsWith(cmd.touchesToString(0)))
 				result.add(c);
 		}
-		
+
 		return result;
 	}
-	
+
+	public static ArrayList<Command> nextCommands (Command cmd, int first) {
+		ArrayList<Command> result = new ArrayList<>();
+
+		for (Command c : commandList) {
+            if(! (cmd.size()<c.size())) continue; // Segurança
+
+			if (c.touchesToString(0).startsWith(cmd.touchesToString(0)) && c.get(cmd.size())==first)
+				result.add(c);
+		}
+
+		return result;
+	}
+
+	public static ArrayList<Command> getAllCommands(int first) {
+		ArrayList<Command> result = new ArrayList<>();
+
+		for (Command c : commandList) {
+			if (c.get(0)==first)
+				result.add(c);
+		}
+
+		return result;
+	}
+
 	public static Stage getStage(Command cmd) {
 
 		if (commandList.contains(cmd))
@@ -126,7 +167,7 @@ public class Encoder {
 			
 			System.out.println(String.format("%s&%s", c, cmd));
 			
-			if (c.touchesToString().startsWith(cmd.touchesToString()))
+			if (c.touchesToString(0).startsWith(cmd.touchesToString(0)))
 				return Stage.INCOMPLET;
 		}
 		

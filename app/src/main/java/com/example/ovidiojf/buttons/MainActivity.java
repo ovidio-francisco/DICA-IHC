@@ -4,7 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -12,12 +15,13 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -90,10 +94,28 @@ public class MainActivity extends AppCompatActivity {
         }
 
         for(Command c : nexts) {
-            imgNext.addView(getTextViewByCommand(c));
+//            imgNext.addView(getTextViewByCommand(c));
+            imgNext.addView(getCommandView2(c));
         }
 
         layoutNexts.addView(imgNext);
+    }
+
+    private LinearLayout getCommandView2(Command c) {
+        LinearLayout result = new LinearLayout(this);
+        result.setOrientation(LinearLayout.HORIZONTAL);
+        result.setGravity(Gravity.BOTTOM);
+
+        result.addView(getTextViewByCommand(c));
+
+        switch (c.getControl()) {
+            case BACKSPACE:
+            case SPACE    :
+            case RETURN   :
+            case EXIT     :     result.addView(getImageByControl(c.getControl())); break;
+        }
+
+        return result;
     }
 
     private LinearLayout getCommandView(Command c) {
@@ -113,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
+
+
     private void cleanNexts() {
         layoutNexts.removeAllViews();
     }
@@ -120,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView getTextViewByCommand (Command c) {
         TextView result = new TextView(this);
         result.setText(c.toString(touches.size()));
-//            text.setTypeface(null, Typeface.BOLD);
+        result.setTypeface(null, Typeface.BOLD);
         result.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
         result.setTypeface(Typeface.MONOSPACE);
         result.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -175,6 +199,31 @@ public class MainActivity extends AppCompatActivity {
         return result;
     }
 
+    private ImageView getImageByControl(Encoder.Control control) {
+        ImageView result = new ImageView(this);
+
+        int drawable = 0;
+        switch (control) {
+            case BACKSPACE: drawable = R.drawable.ic_backspace; break;
+            case RETURN   : drawable = R.drawable.ic_enter2;    break;
+            case SPACE    : drawable = R.drawable.ic_space2;    break;
+            case EXIT     : drawable = R.drawable.ic_exit;      break;
+        }
+
+        if (control == Encoder.Control.EXIT && true) {
+            Bitmap bMap = BitmapFactory.decodeResource(getResources(), drawable);
+            Bitmap scal = Bitmap.createScaledBitmap(bMap, 39, 37, true);
+            result.setImageBitmap(scal);
+        }
+        else {
+            result.setImageResource(drawable);
+        }
+
+        if (control == Encoder.Control.BACKSPACE || control == Encoder.Control.RETURN) result.setPadding(2,2,2,5);
+
+        return result;
+    }
+
     private void showAllCommands() {
         ArrayList<Command> nextsDown  = Encoder.getAllCommands(Touch.DOWN);
         ArrayList<Command> nextsUp    = Encoder.getAllCommands(Touch.UP);
@@ -197,18 +246,17 @@ public class MainActivity extends AppCompatActivity {
         Stage stage = Encoder.getStage(command);
 
         if (stage == Stage.DONE) {
-            String s = Encoder.find(command);
+            Command c = Encoder.findCommand(command);
 
 
 
-            if(s != null) {
-                if (s.compareTo("&backspace") == 0) {
-                    etTexto.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
+            if(c != null) {
+
+                switch (c.getControl()) {
+                    case BACKSPACE: etTexto.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL)); break;
+                    case EXIT     : finish(); break;
+                    default       : etTexto.append(c.getTarget());
                 }
-                else {
-                    etTexto.append(s);
-                }
-
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -245,7 +293,16 @@ public class MainActivity extends AppCompatActivity {
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        setTitle("DICA - ");
+        setTitle("DICA - Dispositivo para Comunicação Alternativa");
+
+//        TextView custonTitle = new TextView(this);
+//        RelativeLayout.LayoutParams custonTitleParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//        custonTitle.setLayoutParams(custonTitleParams);
+//        custonTitle.setText("DICA - Dispositivo para Comunicação Alternativa");
+//        custonTitle.setTextSize(30);
+
+//        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+//        getSupportActionBar().setCustomView(custonTitle);
 
         btCima  = (ImageButton) findViewById(R.id.btCima);
         btEsq   = (ImageButton) findViewById(R.id.btEsquerda);

@@ -1,10 +1,12 @@
 package command;
 
 import java.util.ArrayList;
+import java.util.concurrent.ConcurrentMap;
 
 public class Encoder {
 	
 	public enum Stage {DONE, WRONG, INCOMPLET};
+	public enum Control {NONE, BACKSPACE, SPACE, RETURN, EXIT}
 
 	static ArrayList<Command> commandList = new ArrayList<>();
 
@@ -69,7 +71,7 @@ public class Encoder {
 	public static final Command command_K = new Command("V^^", _K);
 	public static final Command command_L = new Command("V>V", _L);
 	public static final Command command_M = new Command("V<>", _M);
-	public static final Command command_N = new Command("V<<", _N);
+	public static final Command command_N = new Command("V<^", _N);
 	public static final Command command_P = new Command("V<V", _P);
 	public static final Command command_U = new Command("V>>", _U);
 	public static final Command command_Q = new Command("^<^", _Q);
@@ -80,6 +82,10 @@ public class Encoder {
 	public static final Command command_W = new Command("^V^", _W);
 	public static final Command command_Z = new Command("^<V", _Z);
 
+	public static final Command command_backspace = new Command("<<" , "", "");
+	public static final Command command_space     = new Command(">>" , " ", "");
+	public static final Command command_return    = new Command("V<<", "\n", "");
+	public static final Command command_exit      = new Command("^^", "");
 
 	static {
 		commandList.add(command_A);
@@ -109,17 +115,34 @@ public class Encoder {
 		commandList.add(command_W);
 		commandList.add(command_Z);
 
-		commandList.add(new Command(">>", " ", "_"));
-		commandList.add(new Command("<<", "&backspace", "⌫"));
+		command_backspace.setControl(Control.BACKSPACE);
+		command_space    .setControl(Control.SPACE);
+		command_return   .setControl(Control.RETURN);
+		command_exit     .setControl(Control.EXIT);
+
+		commandList.add(command_backspace);
+		commandList.add(command_space);
+		commandList.add(command_return);
+		commandList.add(command_exit);
 	}
 	
-	public static String find(Command c) {
+	public static String findTarget(Command c) {
 		int i = commandList.indexOf(c);
 		
 		if (i >=0) {
 			return commandList.get(i).getTarget();
 		}
 		
+		return null;
+	}
+
+	public static Command findCommand(Command c) {
+		int i = commandList.indexOf(c);
+
+		if (i>=0) {
+			return commandList.get(i);
+		}
+
 		return null;
 	}
 

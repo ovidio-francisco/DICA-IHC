@@ -7,6 +7,7 @@ public class Command extends ArrayList<Integer> {
 	private static final long serialVersionUID = 6781377494867334709L;
 	private String target = null;
 	private String display = null;
+	private Encoder.Control control = Encoder.Control.NONE;
 
 	public Command(ArrayList<Integer> a) {
 		this.addAll(a);
@@ -69,5 +70,13 @@ public class Command extends ArrayList<Integer> {
 
 	public String getDisplay() {
 		return display;
+	}
+
+	public Encoder.Control getControl() {
+		return control;
+	}
+
+	public void setControl(Encoder.Control control) {
+		this.control = control;
 	}
 }

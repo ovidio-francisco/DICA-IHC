@@ -110,7 +110,7 @@ public class Encoder {
 		commandList.add(command_Z);
 
 		commandList.add(new Command(">>", " ", "_"));
-		commandList.add(new Command("<<", "<", "⌫"));
+		commandList.add(new Command("<<", "&backspace", "⌫"));
 	}
 	
 	public static String find(Command c) {

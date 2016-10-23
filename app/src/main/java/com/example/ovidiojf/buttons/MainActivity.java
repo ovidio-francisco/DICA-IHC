@@ -1,5 +1,7 @@
 package com.example.ovidiojf.buttons;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Handler;
@@ -8,6 +10,7 @@ import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -27,7 +30,6 @@ import command.Touch;
 public class MainActivity extends AppCompatActivity {
     ArrayList<Integer> touches = new ArrayList<>();
 
-    private Button bt;
     private ImageButton btCima, btEsq, btDir, btBaixo;
     private EditText etTexto;
 
@@ -84,34 +86,93 @@ public class MainActivity extends AppCompatActivity {
         imgNext.setGravity(Gravity.CENTER_HORIZONTAL);
 
         if(!true) {
-            int drawable = 0;
-            switch (first) {
-                case Touch.UP   : drawable = R.mipmap.ic_up;     break;
-                case Touch.DOWN : drawable = R.mipmap.ic_down;   break;
-                case Touch.LEFT : drawable = R.mipmap.ic_left2;  break;
-                case Touch.RIGHT: drawable = R.mipmap.ic_right;  break;
-            }
-
-            ImageView touch = new ImageView(this);
-            touch.setImageResource(drawable);
-            imgNext.addView(touch);
+            imgNext.addView(getImageViewByTouch(first));
         }
 
         for(Command c : nexts) {
-            TextView text = new TextView(this);
-            text.setText(c.toString(touches.size()));
-            text.setTypeface(null, Typeface.BOLD);
-            text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
-            text.setTypeface(Typeface.createFromAsset(getAssets(), "arial.ttf"));
-            text.setGravity(Gravity.CENTER_HORIZONTAL);
-            imgNext.addView(text);
+            imgNext.addView(getTextViewByCommand(c));
         }
 
         layoutNexts.addView(imgNext);
     }
 
+    private LinearLayout getCommandView(Command c) {
+        LinearLayout result = new LinearLayout(this);
+        result.setOrientation(LinearLayout.HORIZONTAL);
+//        result.addView(getTextViewByCommand(c));
+
+        for(int t: c) {
+            result.addView(getImageViewByTouch2(t));
+        }
+
+        TextView label = new TextView(this);
+        label.setText(c.getTarget());
+
+        result.addView(label);
+
+        return result;
+    }
+
     private void cleanNexts() {
         layoutNexts.removeAllViews();
+    }
+
+    private TextView getTextViewByCommand (Command c) {
+        TextView result = new TextView(this);
+        result.setText(c.toString(touches.size()));
+//            text.setTypeface(null, Typeface.BOLD);
+        result.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32);
+        result.setTypeface(Typeface.MONOSPACE);
+        result.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        return result;
+    }
+
+    private int getDrawableByTouch(int t) {
+        int drawable = 0;
+        switch (t) {
+            case Touch.UP   : drawable = R.mipmap.ic_up;     break;
+            case Touch.DOWN : drawable = R.mipmap.ic_down;   break;
+            case Touch.LEFT : drawable = R.mipmap.ic_left2;  break;
+            case Touch.RIGHT: drawable = R.mipmap.ic_right;  break;
+        }
+
+        return drawable;
+    }
+
+    private ImageView getImageViewByTouch(int t) {
+        ImageView result = new ImageView(this);
+        int drawable = getDrawableByTouch(t);
+
+        Bitmap bMap = BitmapFactory.decodeResource(getResources(), drawable);
+        Bitmap scal = Bitmap.createScaledBitmap(bMap, 40, 40, true);
+        result.setImageBitmap(scal);
+
+//        result.setRotation((float) 90);
+
+        return result;
+    }
+
+    private ImageView getImageViewByTouch2(int t) {
+        ImageView result = new ImageView(this);
+
+        Bitmap bMap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_left_arrow);
+        Bitmap scal = Bitmap.createScaledBitmap(bMap, 40, 40, true);
+        result.setImageBitmap(scal);
+
+        result.setPadding(2,2,2,2);
+
+        float rotate = 0;
+        switch (t) {
+            case Touch.DOWN : rotate = 180f; break;
+            case Touch.LEFT : rotate = 270f; break;
+            case Touch.UP   : rotate = 000f; break;
+            case Touch.RIGHT: rotate = 090f; break;
+        }
+
+        result.setRotation(rotate);
+
+        return result;
     }
 
     private void showAllCommands() {
@@ -138,8 +199,16 @@ public class MainActivity extends AppCompatActivity {
         if (stage == Stage.DONE) {
             String s = Encoder.find(command);
 
+
+
             if(s != null) {
-                etTexto.append(s);
+                if (s.compareTo("&backspace") == 0) {
+                    etTexto.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
+                }
+                else {
+                    etTexto.append(s);
+                }
+
 
                 new Handler().postDelayed(new Runnable() {
                     @Override

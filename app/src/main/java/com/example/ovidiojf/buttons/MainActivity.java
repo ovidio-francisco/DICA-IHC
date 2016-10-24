@@ -1,13 +1,15 @@
 package com.example.ovidiojf.buttons;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
-import android.media.SoundPool;
+import android.os.Build;
 import android.os.Handler;
-import android.support.v7.app.ActionBar;
+import android.os.Vibrator;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -21,10 +23,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import command.Command;
 import command.Encoder;
@@ -36,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageButton btCima, btEsq, btDir, btBaixo;
     private EditText etTexto;
+
+    private MediaPlayer soundAddLetter, soudWrong, soundTouch, soundBacspace;
+
+    private TextToSpeech tts;
 
     LinearLayout layoutCommands, layoutNexts;
 
@@ -112,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             case BACKSPACE:
             case SPACE    :
             case RETURN   :
+            case SPEACH   :
             case EXIT     :     result.addView(getImageByControl(c.getControl())); break;
         }
 
@@ -208,9 +215,10 @@ public class MainActivity extends AppCompatActivity {
             case RETURN   : drawable = R.drawable.ic_enter2;    break;
             case SPACE    : drawable = R.drawable.ic_space2;    break;
             case EXIT     : drawable = R.drawable.ic_exit;      break;
+            case SPEACH   : drawable = R.drawable.ic_speach1;   break;
         }
 
-        if (control == Encoder.Control.EXIT && true) {
+        if ((control == Encoder.Control.EXIT || control == Encoder.Control.SPEACH) && true) {
             Bitmap bMap = BitmapFactory.decodeResource(getResources(), drawable);
             Bitmap scal = Bitmap.createScaledBitmap(bMap, 39, 37, true);
             result.setImageBitmap(scal);
@@ -222,6 +230,11 @@ public class MainActivity extends AppCompatActivity {
         if (control == Encoder.Control.BACKSPACE || control == Encoder.Control.RETURN) result.setPadding(2,2,2,5);
 
         return result;
+    }
+
+    private void vibre() {
+//        Vibrator v = (Vibrator)this.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+//        v.vibrate(500);
     }
 
     private void showAllCommands() {
@@ -238,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addTouch(int t) {
 
+
         touches.add(t);
         addFeedbackTouch(t);
 
@@ -253,8 +267,15 @@ public class MainActivity extends AppCompatActivity {
             if(c != null) {
 
                 switch (c.getControl()) {
+                    case BACKSPACE: soundBacspace.start(); break;
+                    case EXIT: break;
+                    default: soundAddLetter.start(); break;
+                }
+
+                switch (c.getControl()) {
                     case BACKSPACE: etTexto.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL)); break;
                     case EXIT     : finish(); break;
+                    case SPEACH   : speak(etTexto.getText().toString());
                     default       : etTexto.append(c.getTarget());
                 }
 
@@ -273,11 +294,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (stage == Stage.INCOMPLET) {
+            soundTouch.start();
+
             cleanNexts();
             addNexts(command);
         }
 
         if (stage == Stage.WRONG) {
+            soudWrong.start();
+            vibre();
             touches.clear();
             cleanFeedbackTouches();
             cleanNexts();
@@ -285,6 +310,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    private void speak(String text){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+        }else{
+            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -308,6 +342,11 @@ public class MainActivity extends AppCompatActivity {
         btEsq   = (ImageButton) findViewById(R.id.btEsquerda);
         btDir   = (ImageButton) findViewById(R.id.btDireita);
         btBaixo = (ImageButton) findViewById(R.id.btBaixo);
+
+        btCima .setSoundEffectsEnabled(false);
+        btEsq  .setSoundEffectsEnabled(false);
+        btDir  .setSoundEffectsEnabled(false);
+        btBaixo.setSoundEffectsEnabled(false);
 
         etTexto = (EditText)findViewById(R.id.etTexto);
 
@@ -345,5 +384,26 @@ public class MainActivity extends AppCompatActivity {
         etTexto.setText("");
 
         showAllCommands();
+
+        soundAddLetter = MediaPlayer.create(this, R.raw.click8);
+        soudWrong      = MediaPlayer.create(this, R.raw.incorrectfunction);
+        soundTouch     = MediaPlayer.create(this, R.raw.click7);
+        soundBacspace  = MediaPlayer.create(this, R.raw.drop1);
+
+        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    int result = tts.setLanguage(new Locale("pt_BR"));
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    }
+           //         speak("Hello girl");
+
+                } else {
+                }
+            }
+        });
+//, "com.googlecode.eyesfree.espeak"
+
     }
 }

@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentMap;
 public class Encoder {
 	
 	public enum Stage {DONE, WRONG, INCOMPLET};
-	public enum Control {NONE, BACKSPACE, SPACE, RETURN, EXIT}
+	public enum Control {NONE, BACKSPACE, SPACE, RETURN, EXIT, SPEACH}
 
 	static ArrayList<Command> commandList = new ArrayList<>();
 
@@ -86,6 +86,7 @@ public class Encoder {
 	public static final Command command_space     = new Command(">>" , " ", "");
 	public static final Command command_return    = new Command("V<<", "\n", "");
 	public static final Command command_exit      = new Command("^^", "");
+	public static final Command command_speach    = new Command("^>", "");
 
 	static {
 		commandList.add(command_A);
@@ -119,11 +120,13 @@ public class Encoder {
 		command_space    .setControl(Control.SPACE);
 		command_return   .setControl(Control.RETURN);
 		command_exit     .setControl(Control.EXIT);
+		command_speach   .setControl(Control.SPEACH);
 
 		commandList.add(command_backspace);
 		commandList.add(command_space);
 		commandList.add(command_return);
 		commandList.add(command_exit);
+		commandList.add(command_speach);
 	}
 	
 	public static String findTarget(Command c) {

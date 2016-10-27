@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_inicial"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.ovidiojf.buttons.InicialActivity">
+
+    <Button
+        android:text="Entrar"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="49dp"
+        android:id="@+id/btEnter"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginStart="40dp"
+        android:textSize="36sp"/>
+
+    <Button
+        android:text="Sair"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:id="@+id/btClose"
+        android:layout_marginRight="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_alignTop="@+id/btEnter"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:textSize="36sp"/>
+
+    <TextView
+        android:text="Dica - Dispositivo para Comunicação Alternativa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:id="@+id/textView"
+        android:layout_below="@+id/btEnter"
+        android:layout_alignLeft="@+id/btEnter"
+        android:layout_alignStart="@+id/btEnter"
+        android:textSize="36sp"
+        android:layout_alignRight="@+id/btClose"
+        android:layout_alignEnd="@+id/btClose"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textStyle="normal|bold"/>
+</RelativeLayout>
